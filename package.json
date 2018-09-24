@@ -4,6 +4,7 @@
   "description": "react node mongo",
   "main": "server.js",
   "scripts": {
+    "start": "node ./server/server.js",
     "server": "nodemon ./server/server.js",
     "build:dev": "webpack",
     "build:prod": "webpack -p --env production",
