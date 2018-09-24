@@ -58,6 +58,7 @@ class Login extends React.Component {
         repassword: '',
         error: '',
         open: false,
+        welcome: ''
     };
     onNameChange = (e) => {
         const name = e.target.value;
@@ -112,8 +113,11 @@ class Login extends React.Component {
         })
         .then(response => response.json())
         .then((response) => {
+            console.log(response);
             if(response.status === false){
-                this.setState({error: response.message})
+                this.setState({error: response.message, welcome: ""})
+            }else{
+                this.setState({welcome: response.message, error: ""})
             }
         })
         
@@ -127,7 +131,7 @@ class Login extends React.Component {
         }
     }
     cleanError = () => {
-        this.setState({error:""})
+        this.setState({error:"", welcome:""});
     }
     render(){
         const { classes } = this.props;
@@ -172,6 +176,11 @@ class Login extends React.Component {
                     {this.state.error&&<MySnackbarContentWrapper
                         variant="error"
                         message={this.state.error}
+                        onClose={this.cleanError}
+                    />}
+                    {this.state.welcome&&<MySnackbarContentWrapper
+                        variant="success"
+                        message={this.state.welcome}
                         onClose={this.cleanError}
                     />}
                 </form>

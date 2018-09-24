@@ -27,7 +27,7 @@ app.post('/registration', (req, res) => {
             email: req.body.email    
         })
         user.save().then((doc) => {
-           res.json(doc); 
+           res.json({status: true, message: "Nice to meet you"}); 
         })
     })
     .catch(() => {
