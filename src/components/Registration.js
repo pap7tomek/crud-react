@@ -111,7 +111,11 @@ class Login extends React.Component {
             }    
         })
         .then(response => response.json())
-        .then(response => console.log(response))
+        .then((response) => {
+            if(response.status === false){
+                this.setState({error: response.message})
+            }
+        })
         
     } 
     onLoginClick = async () => {

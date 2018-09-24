@@ -5,14 +5,33 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 app.post('/registration', (req, res) => {
-
-    const user = new User({
-        username: req.body.username,
-        password: req.body.password,
-        email: req.body.email    
+    let error = false;
+    let errorM = "";
+    User.find({username: req.body.username}).exec().then((result) => {
+        if(result.length > 0){
+            error = true;
+            errorM = "Change username";
+            throw error;
+        }
+        return User.find({email:req.body.email}).exec()
+    }).then((result2) => {
+        if(result2.length > 0){
+            error = true;
+            errorM = "E-mail exists";
+            throw error;
+        }
+    }).then(() => {
+        const user = new User({
+            username: req.body.username,
+            password: req.body.password,
+            email: req.body.email    
+        })
+        user.save().then((doc) => {
+           res.json(doc); 
+        })
     })
-    user.save().then((doc) => {
-       res.json(doc); 
+    .catch(() => {
+        res.json({status: false, message: errorM});
     })
 });
 
