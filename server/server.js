@@ -19,6 +19,6 @@ app.get('/aaa', (req, res) => {
     res.json({"name":"Johnaaaaaa", "age":31, "city":"New York"});
 });
 
-app.listen(3000, () => {
-  console.log('Server is up!');
-});
+app.listen(process.env.PORT || 5000)
+
+
