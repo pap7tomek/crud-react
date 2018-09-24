@@ -167,7 +167,7 @@ class Login extends React.Component {
                         className={[classes.button, classes.buttonBlue]}
                         onClick={this.onLoginClick}
                     >
-                        Sing up
+                        Sign up
                     </Button>
                     {this.state.error&&<MySnackbarContentWrapper
                         variant="error"
