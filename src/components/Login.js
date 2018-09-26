@@ -2,8 +2,9 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import {serverPath} from '../config';
+import {getServerPath} from '../config';
 import {Link} from 'react-router-dom';
+import MySnackbarContentWrapper from './MySnackbarContentWrapper';
 const styles = theme => ({
     link: {
       textDecoration: 'none',
@@ -35,11 +36,13 @@ const styles = theme => ({
         marginTop: '10px'
     }
   });
+  
 class Login extends React.Component {
     state = {
         name: '',
         password: '',
-        error: ''
+        error: '',
+        status: ''
     };
     onNameChange = (e) => {
         const name = e.target.value;
@@ -54,19 +57,35 @@ class Login extends React.Component {
         console.log(this.state.password);
         const data = {
             username: this.state.name,
-            email: this.state.password
+            password: this.state.password
         }
-        fetch(serverPath + 'auth/registration', {
+        fetch(getServerPath() + 'auth/login', {
             method: 'POST',
             body: JSON.stringify(data),
             headers:{
                 'Content-Type': 'application/json'
             }    
         })
-        .then(response => response.json())
-        .then(response => console.log(response))
+        .then((response) => {
+            if(response.status === 403){
+                throw 403;
+            }else{
+                return response.json();
+            }
+        })
+        .then((response) => {
+            localStorage.setItem("crud-tomek", response.token);
+            this.setState({error: "Hi again!!!", status:'success'});
+        }).catch((err) => {
+            localStorage.setItem("crud-tomek", null);
+            this.setState({error: "Wrong username or password", status:'error'});
+            console.log(err);
+        })
         
     } 
+    cleanError = () => {
+        this.setState({error:"", status:""});
+    }
     onLoginClick = async () => {
         this.send();
     }
@@ -77,13 +96,13 @@ class Login extends React.Component {
                 <form className={classes.container} noValidate autoComplete="off">
                     <TextField
                         className={classes.formControl}
-                        id="standard-name"
+                        id="username"
                         label="Username"
                         onChange={this.onNameChange}
                     />
                     <TextField
                         className={classes.formControl}
-                        id="standard-name"
+                        id="password"
                         label="Password"
                         type="password"
                         onChange={this.onPasswordChange}
@@ -105,6 +124,11 @@ class Login extends React.Component {
                             Registration
                         </Button> 
                     </Link>
+                    {this.state.error&&<MySnackbarContentWrapper
+                        variant={this.state.status}
+                        message={this.state.error}
+                        onClose={this.cleanError}
+                    />}
                 </form>
         </div>
         );

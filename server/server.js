@@ -9,12 +9,10 @@ const publicPath = path.join(__dirname, '..', 'public');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 mongoose.connect(mongoPath, {useNewUrlParser: true});
-app.use('/auth', auth);
-
+app.use(cors({credentials: true}));
+app.use('/auth', auth.app);
 app.use(express.static(publicPath));
 app.use(bodyParser.json());
-app.use(cors());
-
 app.get('/aaa', (req, res) => {
     res.json({"name":"Johnaaaaaa", "age":31, "city":"New York"});
 });

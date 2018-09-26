@@ -108,6 +108,7 @@ const styles = theme => ({
 
 class Header extends React.Component {
   state = {
+    isLogged: false,
     open: false,
     anchor: 'left',
   };

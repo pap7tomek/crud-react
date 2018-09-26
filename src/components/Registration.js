@@ -2,7 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import {serverPath} from '../config';
+import {getServerPath} from '../config';
 import validator from 'validator';
 import MySnackbarContentWrapper from './MySnackbarContentWrapper';
 const styles = theme => ({
@@ -104,7 +104,7 @@ class Login extends React.Component {
             password: this.state.password,
             email: this.state.email
         }
-        fetch(serverPath + 'auth/registration', {
+        fetch(getServerPath() + 'auth/registration', {
             method: 'POST',
             body: JSON.stringify(data),
             headers:{
@@ -113,7 +113,6 @@ class Login extends React.Component {
         })
         .then(response => response.json())
         .then((response) => {
-            console.log(response);
             if(response.status === false){
                 this.setState({error: response.message, welcome: ""})
             }else{
