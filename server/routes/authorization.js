@@ -50,6 +50,17 @@ app.post('/login', (req, res) => {
         }
     })
 });
+app.post('/check', (req, res) => {
+    jwt.verify(req.body.token, 'secretkey', (err, authData) => {
+        if(err) {
+          res.sendStatus(403);
+        } else {
+          res.json({
+            authData
+          });
+        }
+    });
+})
 const verifyToken = (req, res, next) => {
     const bearerHeader = req.headers['authorization'];
     if(typeof bearerHeader !== 'undefined') {

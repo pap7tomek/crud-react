@@ -5,10 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -17,8 +14,9 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ItemList from './ItemList';
 import AppRouter from '../routers/AppRouter';
 import Button from '@material-ui/core/Button';
+import {getServerPath} from '../config';
 
-import { BrowserRouter, Route, Link } from "react-router-dom";
+import { BrowserRouter, Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -112,7 +110,42 @@ class Header extends React.Component {
     open: false,
     anchor: 'left',
   };
+  componentWillMount = () => {
+    const token = {
+      token: localStorage.getItem("crud-tomek")
+    };
+    console.log(token);
+    if(localStorage.getItem("crud-tomek") === "null" || localStorage.getItem("crud-tomek") === null){
+      return;
+    }
+    fetch(getServerPath() + 'auth/check', {
+        method: 'POST',
+        body: JSON.stringify(token),
+        headers:{
+            'Content-Type': 'application/json'
+        }    
+    })
+    .then((response) => {
+        if(response.status === 403){
+            throw 403;
+        }else{
+            return response.json();
+        }
+    })
+    .then((response) => {
+        this.setState({isLogged:true});
+    }).catch((err) => {
+        localStorage.setItem("crud-tomek", null);
+    })
 
+  }
+  handleChangeLogin = () => {
+    this.setState({ isLogged: true });
+  }
+  handleChangeLogout = () => {
+    localStorage.setItem("crud-tomek", null);
+    this.setState({ isLogged: false});
+  }
   handleDrawerOpen = () => {
     this.setState({ open: true });
   };
@@ -130,7 +163,7 @@ class Header extends React.Component {
   render() {
     const { classes, theme } = this.props;
     const { anchor, open } = this.state;
-
+    console.log(this.state.isLogged);
     const drawer = (
       
       <Drawer
@@ -160,7 +193,12 @@ class Header extends React.Component {
     } else {
       after = drawer;
     }
-
+    let loginButton;
+    if(!this.state.isLogged) {
+      loginButton = <Link className={classes.link} to='/login'><Button  className={classes.button} color="inherit">Login</Button></Link>;
+    }else {
+      loginButton = <Button onClick={this.handleChangeLogout}className={classes.button} color="inherit">Logout</Button>;
+    }
     return (
       <BrowserRouter>
       <div className={classes.root}>
@@ -183,7 +221,7 @@ class Header extends React.Component {
               <Link to="/" className={classes.link} style={{ flex:1 }}><Typography variant="title" style={{ flex: 1 }} color="inherit" noWrap>
                 CRUD
               </Typography></Link>
-              <Link className={classes.link} to='/link'><Button  className={classes.button} color="inherit">Login</Button></Link>
+              {loginButton}
             </Toolbar>
           </AppBar>
           {before}
@@ -194,7 +232,7 @@ class Header extends React.Component {
             })}
           >
             <div className={classes.drawerHeader} />
-            <AppRouter></AppRouter>
+            <AppRouter handleChangeLogin={this.handleChangeLogin}></AppRouter>
           </main>
           {after}
         </div>

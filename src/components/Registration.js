@@ -97,8 +97,6 @@ class Login extends React.Component {
         
     }
     send = async () => {
-        console.log(this.state.name);
-        console.log(this.state.password);
         const data = {
             username: this.state.name,
             password: this.state.password,
@@ -114,16 +112,16 @@ class Login extends React.Component {
         .then(response => response.json())
         .then((response) => {
             if(response.status === false){
-                this.setState({error: response.message, welcome: ""})
+                this.setState({error: response.message, welcome: ""});
             }else{
                 this.setState({welcome: response.message, error: ""})
+                return <Redirect to='/target' />
             }
         })
         
     } 
     onLoginClick = async () => {
         if(this.checkRegister()){
-            console.log("czemu to tu jest");
             this.send();
         }else {
             this.setState({open: true});
