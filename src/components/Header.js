@@ -15,7 +15,6 @@ import ItemList from './ItemList';
 import AppRouter from '../routers/AppRouter';
 import Button from '@material-ui/core/Button';
 import {getServerPath} from '../config';
-
 import { BrowserRouter, Link } from "react-router-dom";
 
 const drawerWidth = 240;
@@ -41,8 +40,10 @@ const styles = theme => ({
   },
   link: {
     textDecoration: 'none',
-    color: '#7e57c2'
-
+    color: '#FFF',
+    '&:hover' : {
+      color: '#FFF'
+    }
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -197,7 +198,7 @@ class Header extends React.Component {
     if(!this.state.isLogged) {
       loginButton = <Link className={classes.link} to='/login'><Button  className={classes.button} color="inherit">Login</Button></Link>;
     }else {
-      loginButton = <Button onClick={this.handleChangeLogout}className={classes.button} color="inherit">Logout</Button>;
+      loginButton = <Link className={classes.link} to='/'><Button onClick={this.handleChangeLogout} className={classes.button} color="inherit">Logout</Button></Link>;
     }
     return (
       <BrowserRouter>

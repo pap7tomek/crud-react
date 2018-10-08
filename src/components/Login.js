@@ -88,7 +88,6 @@ class Login extends React.Component {
             this.setState({error: "Wrong username or password", status:'error'});
             console.log(err);
         })
-        
     } 
     cleanError = () => {
         this.setState({error:"", status:""});

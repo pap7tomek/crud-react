@@ -9,6 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import {getServerPath} from '../config';
 const styles = theme => ({
   root: {
     width: '100%',
@@ -44,56 +45,96 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 
-function SimpleTable(props) {
-  const { classes } = props;
+class SimpleTable extends React.Component {
+  state = {
+    note:''
+  }
+  onNoteChange = (e) => {
+    const note = e.target.value;
+    this.setState(() => ({note}));
+  }
+  saveNote = async () => {
 
-  return (
-    <div>
-      <Paper className={classes.root}>
-        <TextField
-          id="outlined-multiline-static"
-          label="Multiline"
-          multiline
-          rows="4"
-          defaultValue="Default Value"
-          className={classes.textField}
-          margin="normal"
-          variant="outlined"
-        />
-        <Button variant="contained" size="large" color="primary" className={classes.button}>
-          Save
-        </Button>
-      </Paper>
-      <Paper className={classes.root}>
-      <Table className={classes.table}>
-          <TableHead>
-          <TableRow>
-              <TableCell>Dessert (100g serving)</TableCell>
-              <TableCell numeric>Calories</TableCell>
-              <TableCell numeric>Fat (g)</TableCell>
-              <TableCell numeric>Carbs (g)</TableCell>
-              <TableCell numeric>Protein (g)</TableCell>
-          </TableRow>
-          </TableHead>
-          <TableBody>
-          {rows.map(row => {
-              return (
-              <TableRow key={row.id}>
-                  <TableCell component="th" scope="row">
-                  {row.name}
-                  </TableCell>
-                  <TableCell numeric>{row.calories}</TableCell>
-                  <TableCell numeric>{row.fat}</TableCell>
-                  <TableCell numeric>{row.carbs}</TableCell>
-                  <TableCell numeric>{row.protein}</TableCell>
-              </TableRow>
-              );
-          })}
-          </TableBody>
-      </Table>
-      </Paper>
-    </div>
-  );
+    const data = {
+      token: localStorage.getItem("crud-tomek"),
+      note: this.state.note
+    }
+    fetch(getServerPath() + 'api/add', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers:{
+            'Content-Type': 'application/json'
+        }    
+    })
+    /*
+    .then((response) => {
+        if(response.status === 403){
+            throw 403;
+        }else{
+            this.props.handleChangeLogin();
+            return response.json();
+        }
+    })
+    .then((response) => {
+        localStorage.setItem("crud-tomek", response.token);
+        this.setState({error: "Hi again!!!", status:'success'});
+        setTimeout(() => this.setState({redirect: true}), 3000);
+    }).catch((err) => {
+        localStorage.setItem("crud-tomek", null);
+        this.setState({error: "Wrong username or password", status:'error'});
+        console.log(err);
+    })*/
+  }
+  render() {
+    const { classes } = this.props;
+    return (
+      <div>
+        <Paper className={classes.root}>
+          <TextField
+            id="outlined-multiline-static"
+            label="Multiline"
+            multiline
+            rows="4"
+            onChange={this.onNoteChange}
+            className={classes.textField}
+            margin="normal"
+            variant="outlined"
+          />
+          <Button onClick={this.saveNote} variant="contained" size="large" color="primary" className={classes.button}>
+            Save
+          </Button>
+        </Paper>
+        <Paper className={classes.root}>
+        <Table className={classes.table}>
+            <TableHead>
+            <TableRow>
+                <TableCell>Dessert (100g serving)</TableCell>
+                <TableCell numeric>Calories</TableCell>
+                <TableCell numeric>Fat (g)</TableCell>
+                <TableCell numeric>Carbs (g)</TableCell>
+                <TableCell numeric>Protein (g)</TableCell>
+            </TableRow>
+            </TableHead>
+            <TableBody>
+            {rows.map(row => {
+                return (
+                <TableRow key={row.id}>
+                    <TableCell component="th" scope="row">
+                    {row.name}
+                    </TableCell>
+                    <TableCell numeric>{row.calories}</TableCell>
+                    <TableCell numeric>{row.fat}</TableCell>
+                    <TableCell numeric>{row.carbs}</TableCell>
+                    <TableCell numeric>{row.protein}</TableCell>
+                </TableRow>
+                );
+            })}
+            </TableBody>
+        </Table>
+        </Paper>
+      </div>
+    );
+  } 
 }
 
 SimpleTable.propTypes = {
