@@ -13,45 +13,22 @@ app.post('/add', (req, res) => {
           "status":"error"
         })
       } else {
-        console.log(authData);
-        res.json({
-          "status":"done"
+        User.find({username: authData.user.username}).exec().then((result) => {
+          const note = new Note({
+            idOwner: result[0]._id,
+            text: req.body.note,
+            isVisible: true
+          })
+          note.save().then((doc) => {
+            console.log(doc);
+            res.json({status: "succes"})
+          })
+        }).catch(() => {
+          console.log("wylogowany");
+          res.json({status: false, message: "fail"});
         })
       }
     });
-    /*
-    const note = new Note({
-        
-    })
-    let error = false;
-    let errorM = "";
-    User.find({username: req.body.username}).exec().then((result) => {
-        if(result.length > 0){
-            error = true;
-            errorM = "Change username";
-            throw error;
-        }
-        return User.find({email:req.body.email}).exec()
-    }).then((result2) => {
-        if(result2.length > 0){
-            error = true;
-            errorM = "E-mail exists";
-            throw error;
-        }
-    }).then(() => {
-        const user = new User({
-            username: req.body.username,
-            password: req.body.password,
-            email: req.body.email    
-        })
-        user.save().then((doc) => {
-           res.json({status: true, message: "Nice to meet you"}); 
-        })
-    })
-    .catch(() => {
-        res.json({status: false, message: errorM});
-    })
-    */
 });
 app.post('/login', (req, res) => {
     User.find({username: req.body.username, password: req.body.password}).exec().then((result) => {
