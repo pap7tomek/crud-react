@@ -11,6 +11,10 @@ module.exports = (env) => {
       path: path.join(__dirname, 'public'),
       filename: 'bundle.js'
     },
+    node: {
+      fs: "empty",
+      net: 'empty'
+    },
     module: {
       rules: [{
         loader: 'babel-loader',
