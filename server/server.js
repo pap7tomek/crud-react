@@ -16,7 +16,7 @@ app.use('/api', api.app);
 app.use(express.static(publicPath));
 app.use(bodyParser.json());
 app.get('*', (req, res) => {
-    res.sendFile('../index.html');
+    res.sendFile("index.html", { root: path.join(__dirname, 'public') })
 });
 
 app.listen(process.env.PORT || 5000)
