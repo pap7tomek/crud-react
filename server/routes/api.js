@@ -100,12 +100,10 @@ app.post('/translate', verifyToken, (req, res) => {
   }).then((response) => {
     return translate(response, {from: 'en', to: 'pl'})
   }).then(response => {
-    console.log(response);
     res.json({
       "text": response
     });
   }).catch(err => {
-    console.log("dupa");
     res.json({
       "text": err
     })

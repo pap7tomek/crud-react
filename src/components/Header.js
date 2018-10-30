@@ -115,7 +115,6 @@ class Header extends React.Component {
     const token = {
       token: localStorage.getItem("crud-tomek")
     };
-    console.log(token);
     if(localStorage.getItem("crud-tomek") === "null" || localStorage.getItem("crud-tomek") === null){
       return;
     }
@@ -164,7 +163,6 @@ class Header extends React.Component {
   render() {
     const { classes, theme } = this.props;
     const { anchor, open } = this.state;
-    console.log(this.state.isLogged);
     const drawer = (
       
       <Drawer
