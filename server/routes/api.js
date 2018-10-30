@@ -94,9 +94,12 @@ app.post('/edit', verifyToken, (req, res) => {
 })
 
 app.post('/translate', verifyToken, (req, res) => {
-  const text = req.body.text;
-  console.log(text);
-  translate(text, {from: 'en', to: 'pl'}).then(response => {
+  const id = req.body.id;
+  Note.findById(id).exec().then((response) => {
+    return response.text
+  }).then((response) => {
+    return translate(response, {from: 'en', to: 'pl'})
+  }).then(response => {
     console.log(response);
     res.json({
       "text": response
@@ -107,5 +110,6 @@ app.post('/translate', verifyToken, (req, res) => {
       "text": err
     })
   })
+  
 })
 module.exports = {app, verifyToken};

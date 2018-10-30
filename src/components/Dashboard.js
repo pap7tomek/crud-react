@@ -101,11 +101,9 @@ class SimpleTable extends React.Component {
     }).catch((err) => {
         localStorage.setItem("crud-tomek", null);
         this.setState({error: "Wrong username or password", status:'error'});
-        console.log(err);
     })
   }
   keyPress = async (e) => {
-    console.log(this.state.note.length);
     if(e.keyCode == 13 && this.state.note != "" && this.state.note != "\n") {
       this.saveNote();
     }
